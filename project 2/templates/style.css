@@ -1,0 +1,201 @@
+:root {
+    --bg-color: #fff5f7; /* Yumşaq çəhrayı fon */
+    --card-bg: #ffffff;
+    --text-color: #4a373a;
+    --main-pink: #ff6b8b; /* Əsas canlı çəhrayı */
+    --light-pink: #fbc4d0;
+    --accent-purple: #9b5de5;
+    --error-red: #e63946;
+    --border-color: #ffe3e8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 600px; /* Panellər alt-alta olduğu üçün mərkəzləşdirilmiş ensiz ekran */
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 25px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 24px rgba(255, 107, 139, 0.1);
+}
+
+header h1 {
+    color: var(--main-pink);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.user-info {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--main-pink);
+    background: rgba(255, 107, 139, 0.1);
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+/* Alt-alta yerləşən Kartlar */
+.auth-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Kartlar arasındakı məsafə */
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    border-color: var(--main-pink);
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    margin-bottom: 20px;
+    color: var(--main-pink);
+    font-size: 22px;
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 10px;
+}
+
+/* Inputlar və Düymələr */
+input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    background: #fffcfd;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--main-pink);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: var(--main-pink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(255, 107, 139, 0.3);
+    transition: transform 0.1s, opacity 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: scale(0.99);
+}
+
+/* Məhsullar Bölməsi (Geniş ekran olacaq deyə max-width böyüyəcək) */
+#products-section {
+    display: none; /* İlk başda gizli saxlayırıq */
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.product-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(255, 107, 139, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+}
+
+.product-card h3 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    color: #8c7a7c;
+    font-size: 14px;
+}
+
+.product-price {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--main-pink);
+    margin: 15px 0;
+}
+
+.buy-btn {
+    background: #fff;
+    border: 2px solid var(--main-pink);
+    color: var(--main-pink);
+    box-shadow: none;
+}
+
+.buy-btn:hover {
+    background: var(--main-pink);
+    color: #fff;
+}
+
+/* Status Mesajları */
+.status-msg {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+}
+
+.error {
+    background: #ffe3e5;
+    color: var(--error-red);
+    border: 1px solid var(--error-red);
+    display: block;
+}
+.success {
+    background: #e6fcf5;
+    color: #0ca678;
+    border: 1px solid #0ca678;
+    display: block;
+}

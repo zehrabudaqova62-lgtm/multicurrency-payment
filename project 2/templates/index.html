@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Boutique - Multi-Currency Store</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <header>
+        <h1>🌸 PINK BOUTIQUE 🌸</h1>
+        <div class="auth-box">
+            <span id="welcome-text" class="user-info">Xoş gəlmisiniz! Zəhmət olmasa giriş edin.</span>
+        </div>
+    </header>
+
+    <div class="auth-wrapper" id="auth-section">
+        <div class="card">
+            <h3>💕 Yeni Hesab Yarat</h3>
+            <input type="text" id="reg-name" placeholder="Tam Adınız">
+            <input type="text" id="reg-user" placeholder="İstifadəçi Adı (Username)">
+            <input type="password" id="reg-pass" placeholder="Şifrə">
+            <button onclick="handleRegister()">Qeydiyyatdan Keç</button>
+            <div id="reg-msg" class="status-msg"></div>
+        </div>
+
+        <div class="card">
+            <h3>💖 Müştəri Girişi</h3>
+            <input type="text" id="login-user" placeholder="İstifadəçi Adı">
+            <input type="password" id="login-pass" placeholder="Şifrə">
+            <button onclick="handleLogin()">Giriş Et</button>
+            <div id="login-msg" class="status-msg"></div>
+        </div>
+    </div>
+</div>
+
+<div id="products-section" style="display: none;">
+    <div class="container" style="max-width: 1000px;">
+        <h2 style="text-align: center; color: #4a373a; margin-bottom: 25px;">✨ Sizə Özəl Premium Məhsullar ✨</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div>
+                    <h3>Advanced Python Book</h3>
+                    <p>Enterprise səviyyəli Backend proqramlaşdırma dərsləri.</p>
+                </div>
+                <div>
+                    <div class="product-price">25.00 AZN</div>
+                    <button class="buy-btn" onclick="makePayment(25.00, 'AZN')">Məhsulu Al</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div>
+                    <h3>Wireless ANC Headset</h3>
+                    <p>Musiqi və kod yazmaq üçün izolyasiyalı qulaqlıq.</p>
+                </div>
+                <div>
+                    <div class="product-price">50.00 USD</div>
+                    <button class="buy-btn" onclick="makePayment(50.00, 'USD')">Məhsulu Al</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div>
+                    <h3>Mechanical RGB Keyboard</h3>
+                    <p>Yazı yazmağı zövqlü edən şirin klaviatura.</p>
+                </div>
+                <div>
+                    <div class="product-price">75.00 EUR</div>
+                    <button class="buy-btn" onclick="makePayment(75.00, 'EUR')">Məhsulu Al</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pay-msg" class="status-msg" style="margin-top: 30px; text-align: left;"></div>
+    </div>
+</div>
+
+<script>
+    let currentUserId = null;
+
+    // API POST sorğusu göndərən köməkçi funksiya
+    async function apiPost(url, data) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return { status: response.status, body: await response.json() };
+        } catch (error) {
+            return { status: 500, body: { detail: "Serverlə əlaqə kəsildi!" } };
+        }
+    }
+
+    // 1. Qeydiyyat funksiyası
+    async function handleRegister() {
+        const msgDiv = document.getElementById('reg-msg');
+        msgDiv.style.display = 'none';
+
+        const data = {
+            full_name: document.getElementById('reg-name').value,
+            username: document.getElementById('reg-user').value,
+            password: document.getElementById('reg-pass').value
+        };
+
+        const res = await apiPost('/api/v1/auth/register', data);
+        if (res.status === 200) {
+            msgDiv.className = "status-msg success";
+            msgDiv.innerText = res.body.message;
+            msgDiv.style.display = 'block';
+        } else {
+            msgDiv.className = "status-msg error";
+            msgDiv.innerText = res.body.detail;
+            msgDiv.style.display = 'block';
+        }
+    }
+
+    // 2. Login funksiyası
+    async function handleLogin() {
+        const msgDiv = document.getElementById('login-msg');
+        msgDiv.style.display = 'none';
+
+        const data = {
+            username: document.getElementById('login-user').value,
+            password: document.getElementById('login-pass').value
+        };
+
+        const res = await apiPost('/api/v1/auth/login', data);
+        if (res.status === 200) {
+            msgDiv.className = "status-msg success";
+            msgDiv.innerText = res.body.message;
+            currentUserId = res.body.user_id;
+
+            // İnterfeys və başlıq yazısını yeniləyirik
+            document.getElementById('welcome-text').innerText = `🌸 Xoş gəldiniz, ${res.body.full_name}!`;
+
+            // Giriş panellərini tamamilə gizlədirik
+            document.getElementById('auth-section').style.display = 'none';
+
+            // Konteynerin ölçüsünü genişləndiririk
+            document.getElementById('main-container').style.maxWidth = '1000px';
+
+            // Gizli olan məhsullar bölməsini aşkara çıxarırıq
+            document.getElementById('products-section').style.display = 'block';
+        } else {
+            // Şifrə səhv olanda və ya istifadəçi tapılmayanda bura işləyir
+            msgDiv.className = "status-msg error";
+            msgDiv.innerText = res.body.detail;
+            msgDiv.style.display = 'block';
+        }
+    }
+
+    // 3. Ödəniş funksiyası
+    async function makePayment(amount, currency) {
+        const payMsg = document.getElementById('pay-msg');
+        payMsg.style.display = 'none';
+
+        const data = {
+            user_id: currentUserId,
+            amount: amount,
+            currency: currency
+        };
+
+        const res = await apiPost('/api/v1/pay', data);
+        if (res.status === 200) {
+            payMsg.className = "status-msg success";
+            payMsg.innerHTML = `
+                <strong>✅ ÖDƏNİŞ UĞURLUDUR!</strong><br>
+                • Transaksiya ID: <code>${res.body.transaction_id}</code><br>
+                • Ödənilən: <strong>${amount} ${currency}</strong><br>
+                • Oracle AZN Balans Hesabatı: <strong>${res.body.converted_to_azn}</strong>
+            `;
+            payMsg.style.display = 'block';
+        } else {
+            payMsg.className = "status-msg error";
+            payMsg.innerHTML = "<strong>Xəta:</strong> " + res.body.detail;
+            payMsg.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
